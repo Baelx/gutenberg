@@ -14,19 +14,13 @@ const addMenuNameEditor = createHigherOrderComponent(
 			return <BlockEdit { ...props } />;
 		}
 		const { saveMenu, menuName } = useNavigationEditorMenu();
-		const NavigationBlockEdit = () =>
-			props.name !== 'core/navigation' ? (
-				<BlockEdit { ...props } />
-			) : (
+		return (
+			<>
 				<BlockEdit
 					{ ...props }
 					saveMenu={ saveMenu }
 					menuName={ menuName }
 				/>
-			);
-		return (
-			<>
-				<NavigationBlockEdit />
 				<NameEditor { ...props } />;
 			</>
 		);
