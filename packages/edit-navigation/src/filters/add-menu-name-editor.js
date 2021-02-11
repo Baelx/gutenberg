@@ -4,23 +4,20 @@
 /**
  * Internal dependencies
  */
-import { NameEditor, useNavigationEditorMenu } from '../components/name-editor';
+import { NameEditor } from '../components/name-editor';
 import { addFilter } from '@wordpress/hooks';
 import { createHigherOrderComponent } from '@wordpress/compose';
+import useNavigationEditor from '../components/layout/use-navigation-editor';
 
 const addMenuNameEditor = createHigherOrderComponent(
 	( BlockEdit ) => ( props ) => {
 		if ( props.name !== 'core/navigation' ) {
 			return <BlockEdit { ...props } />;
 		}
-		const { saveMenu, menuName } = useNavigationEditorMenu();
+		const { menuName } = useNavigationEditor();
 		return (
 			<>
-				<BlockEdit
-					{ ...props }
-					saveMenu={ saveMenu }
-					menuName={ menuName }
-				/>
+				<BlockEdit { ...props } menuName={ menuName } />
 				<NameEditor { ...props } />;
 			</>
 		);

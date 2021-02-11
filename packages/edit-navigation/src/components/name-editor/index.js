@@ -1,54 +1,28 @@
 /**
- * WordPress dependencies
- */
-import { __ } from '@wordpress/i18n';
-import { useDispatch, useSelect } from '@wordpress/data';
-import { useContext } from '@wordpress/element';
-/**
  * Internal dependencies
  */
-import { MenuIdContext } from '../layout';
+/**
+ * WordPress dependencies
+ */
 import { BlockControls } from '@wordpress/block-editor';
-import {
-	__experimentalEditInPlaceControl as EditInPlaceControl,
-	ToolbarGroup,
-} from '@wordpress/components';
+import { ToolbarGroup } from '@wordpress/components';
+import useNavigationEditor from '../layout/use-navigation-editor';
+import { useEffect, useState } from '@wordpress/element';
 
-const untitledMenu = __( '(untitled menu)' );
-
-export const useNavigationEditorMenu = () => {
-	const { saveMenu } = useDispatch( 'core' );
-	const menuId = useContext( MenuIdContext );
-	const menu = useSelect( ( select ) => select( 'core' ).getMenu( menuId ), [
-		menuId,
-	] );
-	const menuName = menu?.name ?? untitledMenu;
-	return {
-		saveMenu,
-		menuId,
-		menu,
-		menuName,
-	};
-};
-
-export function NameEditor( props ) {
-	const { menu, menuName, saveMenu } = useNavigationEditorMenu();
+export function NameEditor() {
+	const { selectedMenuName, editSelectedMenuName } = useNavigationEditor();
+	const [ tmpMenuName, setTmpMenuName ] = useState( selectedMenuName );
+	useEffect( () => setTmpMenuName( selectedMenuName ), [ selectedMenuName ] );
 	return (
 		<>
 			<BlockControls>
 				<ToolbarGroup>
-					<EditInPlaceControl
-						{ ...props }
-						initialValue={ menuName }
-						switchToEditModeButtonLabel={ __(
-							'Click to edit menu name'
-						) }
-						inputLabel={ __( 'Edit menu name' ) }
-						onUpdate={ ( value ) => {
-							saveMenu( {
-								...menu,
-								name: value || untitledMenu,
-							} );
+					<input
+						value={ tmpMenuName }
+						onChange={ ( event ) => {
+							const value = event.target.value;
+							setTmpMenuName( value );
+							editSelectedMenuName( value );
 						} }
 					/>
 				</ToolbarGroup>
