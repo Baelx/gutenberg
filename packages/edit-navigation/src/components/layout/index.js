@@ -16,9 +16,11 @@ import {
 /**
  * Internal dependencies
  */
-import useNavigationEditor from './use-navigation-editor';
-import useNavigationBlockEditor from './use-navigation-block-editor';
-import useMenuNotifications from './use-menu-notifications';
+import {
+	useNavigationEditor,
+	useNavigationBlockEditor,
+	useMenuNotifications,
+} from '../../hooks';
 import ErrorBoundary from '../error-boundary';
 import NavigationEditorShortcuts from './shortcuts';
 import Header from '../header';

@@ -7,7 +7,7 @@
 import { NameEditor } from '../components/name-editor';
 import { addFilter } from '@wordpress/hooks';
 import { createHigherOrderComponent } from '@wordpress/compose';
-import useNavigationEditor from '../components/layout/use-navigation-editor';
+import { useNavigationEditor } from '../hooks';
 
 const addMenuNameEditor = createHigherOrderComponent(
 	( BlockEdit ) => ( props ) => {
