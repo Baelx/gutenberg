@@ -6,17 +6,16 @@ import {
 	Popover,
 	SlotFillProvider,
 } from '@wordpress/components';
-import { createContext } from '@wordpress/element';
 import { useDispatch } from '@wordpress/data';
 import {
 	BlockEditorKeyboardShortcuts,
 	BlockEditorProvider,
 } from '@wordpress/block-editor';
-
 /**
  * Internal dependencies
  */
 import {
+	MenuIdContext,
 	useNavigationEditor,
 	useNavigationBlockEditor,
 	useMenuNotifications,
@@ -29,8 +28,6 @@ import Toolbar from '../toolbar';
 import Editor from '../editor';
 import InspectorAdditions from '../inspector-additions';
 import { store as editNavigationStore } from '../../store';
-
-export const MenuIdContext = createContext();
 
 export default function Layout( { blockEditorSettings } ) {
 	const { saveNavigationPost } = useDispatch( editNavigationStore );

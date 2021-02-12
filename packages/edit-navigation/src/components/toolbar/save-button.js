@@ -9,9 +9,8 @@ import { __ } from '@wordpress/i18n';
  * Internal dependencies
  */
 import { store as editNavigationStore } from '../../store';
-import { useMenuEntity } from '../../hooks';
+import { useMenuEntity, MenuIdContext } from '../../hooks';
 import { useContext } from '@wordpress/element';
-import { MenuIdContext } from '../layout';
 
 export default function SaveButton( { navigationPost } ) {
 	const menuId = useContext( MenuIdContext );
