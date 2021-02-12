@@ -9,10 +9,8 @@ import { __ } from '@wordpress/i18n';
  * Internal dependencies
  */
 import { store as editNavigationStore } from '../../store';
-import useNavigationEditor from '../layout/use-navigation-editor';
 
 export default function SaveButton( { navigationPost } ) {
-	const { saveSelectedMenuName } = useNavigationEditor();
 	const { saveNavigationPost } = useDispatch( editNavigationStore );
 
 	return (
@@ -20,7 +18,6 @@ export default function SaveButton( { navigationPost } ) {
 			className="edit-navigation-toolbar__save-button"
 			isPrimary
 			onClick={ () => {
-				saveSelectedMenuName();
 				saveNavigationPost( navigationPost );
 			} }
 		>

@@ -6,6 +6,7 @@ import {
 	Popover,
 	SlotFillProvider,
 } from '@wordpress/components';
+import { createContext } from '@wordpress/element';
 import { useDispatch } from '@wordpress/data';
 import {
 	BlockEditorKeyboardShortcuts,
@@ -15,7 +16,7 @@ import {
 /**
  * Internal dependencies
  */
-import useNavigationEditor, { MenuIdContext } from './use-navigation-editor';
+import useNavigationEditor from './use-navigation-editor';
 import useNavigationBlockEditor from './use-navigation-block-editor';
 import useMenuNotifications from './use-menu-notifications';
 import ErrorBoundary from '../error-boundary';
@@ -26,13 +27,20 @@ import Toolbar from '../toolbar';
 import Editor from '../editor';
 import InspectorAdditions from '../inspector-additions';
 import { store as editNavigationStore } from '../../store';
-import { useState } from '@wordpress/element';
+
+export const MenuIdContext = createContext();
 
 export default function Layout( { blockEditorSettings } ) {
 	const { saveNavigationPost } = useDispatch( editNavigationStore );
 	const savePost = () => saveNavigationPost( navigationPost );
-	const [ selectedMenuId, setSelectedMenuId ] = useState( null );
-	const { menus, navigationPost, deleteMenu } = useNavigationEditor();
+
+	const {
+		menus,
+		selectedMenuId,
+		navigationPost,
+		selectMenu,
+		deleteMenu,
+	} = useNavigationEditor();
 
 	const [ blocks, onInput, onChange ] = useNavigationBlockEditor(
 		navigationPost
@@ -54,12 +62,10 @@ export default function Layout( { blockEditorSettings } ) {
 							isPending={ ! navigationPost }
 							menus={ menus }
 							selectedMenuId={ selectedMenuId }
-							onSelectMenu={ setSelectedMenuId }
+							onSelectMenu={ selectMenu }
 						/>
 
-						<MenuIdContext.Provider
-							value={ [ selectedMenuId, setSelectedMenuId ] }
-						>
+						<MenuIdContext.Provider value={ selectedMenuId }>
 							<BlockEditorProvider
 								value={ blocks }
 								onInput={ onInput }

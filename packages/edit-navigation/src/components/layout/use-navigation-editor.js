@@ -1,28 +1,23 @@
 /**
  * WordPress dependencies
  */
+import { __ } from '@wordpress/i18n';
 import { useSelect, useDispatch } from '@wordpress/data';
-import { useContext, useEffect, createContext } from '@wordpress/element';
-
+import { useState, useEffect } from '@wordpress/element';
+/**
+ * External dependencies
+ */
+import { negate, isUndefined } from 'lodash';
 /**
  * Internal dependencies
  */
 import { store as editNavigationStore } from '../../store';
-import { __ } from '@wordpress/i18n';
-
-/**
- * External dependencies
- */
-import { isUndefined, negate, noop } from 'lodash';
-
-export const MenuIdContext = createContext( [ null, noop ] );
 export const untitledMenu = __( '(untitled menu)' );
 
-const useMenuEntity = ( menuId ) => {
+export const useMenuEntity = ( menuId ) => {
 	const { editEntityRecord, saveEditedEntityRecord } = useDispatch( 'core' );
 
 	const menuEntityData = [ 'root', 'menu', menuId ];
-
 	const editedMenu = useSelect(
 		( select ) => select( 'core' ).getEditedEntityRecord,
 		[ menuId ]
@@ -43,8 +38,32 @@ const useMenuEntity = ( menuId ) => {
 };
 
 export default function useNavigationEditor() {
+	const menus = useSelect(
+		( select ) => select( 'core' ).getMenus( { per_page: -1 } ),
+		[]
+	);
+
+	const [ selectedMenuId, setSelectedMenuId ] = useState( null );
+
+	useEffect( () => {
+		if ( ! selectedMenuId && menus?.length ) {
+			setSelectedMenuId( menus[ 0 ].id );
+		}
+	}, [ selectedMenuId, menus ] );
+
+	const navigationPost = useSelect(
+		( select ) =>
+			select( editNavigationStore ).getNavigationPostForMenu(
+				selectedMenuId
+			),
+		[ selectedMenuId ]
+	);
+
+	const selectMenu = ( menuId ) => {
+		setSelectedMenuId( menuId );
+	};
+
 	const { deleteMenu: _deleteMenu } = useDispatch( 'core' );
-	const [ selectedMenuId, setSelectedMenuId ] = useContext( MenuIdContext );
 
 	const deleteMenu = async () => {
 		const didDeleteMenu = await _deleteMenu( selectedMenuId, {
@@ -55,46 +74,11 @@ export default function useNavigationEditor() {
 		}
 	};
 
-	const menus = useSelect(
-		( select ) => select( 'core' ).getMenus( { per_page: -1 } ),
-		[]
-	);
-
-	const navigationPost = useSelect(
-		( select ) =>
-			select( editNavigationStore ).getNavigationPostForMenu(
-				selectedMenuId
-			),
-		[ selectedMenuId ]
-	);
-
-	const selectedMenu = useSelect(
-		( select ) => select( 'core' ).getMenu( selectedMenuId ),
-		[ selectedMenuId ]
-	);
-
-	useEffect( () => {
-		const noSelectedMenu = ! selectedMenuId && menus?.length;
-		if ( noSelectedMenu ) {
-			setSelectedMenuId( menus[ 0 ].id );
-		}
-	}, [ selectedMenuId, menus ] );
-
-	const selectedMenuName = selectedMenu?.name ?? untitledMenu;
-
-	const {
-		saveMenuName: saveSelectedMenuName,
-		editMenuName: editSelectedMenuName,
-	} = useMenuEntity( selectedMenuId );
-
 	return {
 		menus,
-		saveSelectedMenuName,
-		editSelectedMenuName,
-		selectedMenuName,
-		selectedMenu,
 		selectedMenuId,
 		navigationPost,
+		selectMenu,
 		deleteMenu,
 	};
 }
