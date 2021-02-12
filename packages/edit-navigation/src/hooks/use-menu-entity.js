@@ -9,12 +9,14 @@ import { isUndefined, negate } from 'lodash';
 /**
  * Internal dependencies
  */
+import { MENU_KIND, MENU_POST_TYPE } from '../utils/constants';
+
 import { untitledMenu } from './index';
 
 export default function useMenuEntity( menuId ) {
 	const { editEntityRecord, saveEditedEntityRecord } = useDispatch( 'core' );
 
-	const menuEntityData = [ 'root', 'menu', menuId ];
+	const menuEntityData = [ MENU_KIND, MENU_POST_TYPE, menuId ];
 	const editedMenu = useSelect(
 		( select ) => select( 'core' ).getEditedEntityRecord,
 		[ menuId ]
